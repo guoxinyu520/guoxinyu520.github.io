@@ -1,11 +1,10 @@
-
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JSON解析</title>
+    <title>JSON FORMMATTER</title>
     <style>
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -18,9 +17,9 @@
 
         .area {
             width: 100%;
-            height: 90vh; /* 设置高度为视口高度的100% */
-            max-height: 90vh; /* 确保不会超过视口高度 */
-            overflow: auto; /* 内容溢出时显示滚动条 */
+            height: 90vh; /* Set height to 100% of viewport height */
+            max-height: 90vh; /* Ensure it doesn't exceed viewport height */
+            overflow: auto; /* Show scrollbar when content overflows */
             border: 1px solid #ddd;
             background-color: white;
             font-family: monospace;
@@ -57,71 +56,71 @@
             color: #a6a6a6;
         }
 
-        /* PHP格式高亮 */
+        /* PHP syntax highlighting */
         .php-keyword {
-            color: #0000BB; /* PHP默认关键字颜色 */
+            color: #0000BB; /* PHP default keyword color */
         }
 
         .php-string {
-            color: #DD0000; /* PHP默认字符串颜色 */
+            color: #DD0000; /* PHP default string color */
         }
 
         .php-comment {
-            color: #008000; /* PHP默认注释颜色 */
+            color: #008000; /* PHP default comment color */
         }
 
-        /* JavaScript格式高亮 */
+        /* JavaScript syntax highlighting */
         .js-keyword {
-            color: #0000FF; /* JavaScript关键字颜色 */
+            color: #0000FF; /* JavaScript keyword color */
         }
 
         .js-string {
-            color: #009900; /* JavaScript字符串颜色 */
+            color: #009900; /* JavaScript string color */
         }
 
         .js-number {
-            color: #0000FF; /* JavaScript数字颜色 */
+            color: #0000FF; /* JavaScript number color */
         }
 
         .js-boolean {
-            color: #0000FF; /* JavaScript布尔值颜色 */
+            color: #0000FF; /* JavaScript boolean color */
         }
 
         .js-null {
-            color: #0000FF; /* JavaScript null颜色 */
+            color: #0000FF; /* JavaScript null color */
         }
 
         .js-comment {
-            color: #808080; /* JavaScript注释颜色 */
+            color: #808080; /* JavaScript comment color */
         }
 
         .js-property {
-            color: #000000; /* JavaScript属性名颜色 */
+            color: #000000; /* JavaScript property name color */
         }
 
-        /* XML格式高亮 */
+        /* XML syntax highlighting */
         .xml-tag {
-            color: #0000FF; /* XML标签颜色 */
+            color: #0000FF; /* XML tag color */
         }
 
         .xml-attr {
-            color: #FF0000; /* XML属性颜色 */
+            color: #FF0000; /* XML attribute color */
         }
 
         .xml-value {
-            color: #000000; /* XML内容颜色 */
+            color: #000000; /* XML content color */
         }
 
         .xml-comment {
-            color: #008000; /* XML注释颜色 */
+            color: #008000; /* XML comment color */
         }
 
         .xml-cdata {
-            color: #808080; /* XML CDATA颜色 */
+            color: #808080; /* XML CDATA color */
         }
 
         .xml-declaration {
-            color: #0000FF; /* XML声明颜色 */
+            color: #0000FF; /* XML declaration color */
         }
 
         .collapsible {
@@ -129,7 +128,7 @@
             user-select: none;
             position: relative;
             display: inline-flex;
-            align-items: center; /* 垂直居中内容 */
+            align-items: center; /* Vertically center content */
         }
 
         .collapsible::before {
@@ -137,16 +136,16 @@
             font-size: 10px;
             color: #666;
             display: inline-block;
-            vertical-align: middle; /* 垂直居中 */
+            vertical-align: middle; /* Vertically center */
             line-height: 1;
             margin-right: 2px;
             position: relative;
-            top: 0; /* 微调位置 */
+            top: 0; /* Fine-tune position */
         }
 
         .collapsed::before {
             content: '▶ ';
-            vertical-align: middle; /* 垂直居中 */
+            vertical-align: middle; /* Vertically center */
         }
 
         .collapsed + .collapsible-content {
@@ -214,18 +213,18 @@
 <body>
 <div style="display: flex;justify-content: center;">
     <div class="format-buttons">
-        <button id="format-btn">格式化JSON</button>
-        <button id="format-php-btn">转为PHP代码</button>
-        <button id="format-js-btn">转为JavaScript代码</button>
-        <button id="format-xml-btn">转为XML代码</button>
-        <button id="clear-btn">清空</button>
-        <button id="cp-json-btn">复制</button>
+        <button id="format-btn">Format JSON</button>
+        <button id="format-php-btn">Convert to PHP</button>
+        <button id="format-js-btn">Convert to JavaScript</button>
+        <button id="format-xml-btn">Convert to XML</button>
+        <button id="clear-btn">Clear</button>
+        <button id="cp-json-btn">Copy</button>
     </div>
 </div>
 
 <div style="display: flex;justify-content: center;">
     <div style="width: 40%;margin-right: 2rem;">
-        <textarea id="json-input" class="area" placeholder="在此粘贴您的JSON数据..."></textarea>
+        <textarea id="json-input" class="area" placeholder="Paste your JSON data here..."></textarea>
     </div>
     <div style="width: 40%;margin-left: 2rem;">
         <div id="json-display" class="area"></div>
@@ -235,7 +234,7 @@
 <div id="toast" class="toast"></div>
 
 <script>
-    // 复制成功提示
+    // Copy success notification
     function showCopySuccess(message, type = 'success') {
         const toast = document.getElementById('toast');
         toast.textContent = message;
@@ -250,7 +249,7 @@
         }, 1000);
     }
 
-    // 传统的复制方法
+    // Traditional copy method
     function fallbackCopyText(text) {
         const tempTextarea = document.createElement('textarea');
         tempTextarea.value = text;
@@ -263,27 +262,27 @@
             tempTextarea.select();
             const successful = document.execCommand('copy');
             if (successful) {
-                showCopySuccess('复制成功');
+                showCopySuccess('Copied successfully');
             } else {
-                console.error('复制命令执行失败');
+                console.error('Copy command execution failed');
             }
         } catch (err) {
-            console.error('复制过程中发生错误:', err);
+            console.error('Error during copy:', err);
         } finally {
             document.body.removeChild(tempTextarea);
         }
     }
 
-    // 复制
+    // Copy text
     function copyText(text) {
-        // 使用 Clipboard API 复制内容 (如果可用)
+        // Use Clipboard API to copy content (if available)
         if (navigator.clipboard && window.isSecureContext) {
             navigator.clipboard.writeText(text)
                 .then(() => {
-                    showCopySuccess('复制成功');
+                    showCopySuccess('Copied successfully');
                 })
                 .catch(err => {
-                    console.error('复制失败:', err);
+                    console.error('Copy failed:', err);
                     fallbackCopyText(text);
                 });
         } else {
@@ -314,7 +313,7 @@
             copyText(displayContent)
         });
 
-        // 当前格式类型（json, php, js, xml）
+        // Current format type (json, php, js, xml)
         let currentFormat = localStorage.getItem('format_to') || 'json';
 
         const formatButtons = {
@@ -339,23 +338,23 @@
             try {
                 const jsonString = jsonInput.value.trim();
                 if (!jsonString) {
-                    jsonDisplay.innerHTML = '<span class="error">请输入JSON数据</span>';
+                    jsonDisplay.innerHTML = '<span class="error">Please enter JSON data</span>';
                     return;
                 }
 
-                // 解析JSON
+                // Parse JSON
                 const jsonData = JSON.parse(jsonString);
 
-                // 保存到localStorage
+                // Save to localStorage
                 localStorage.setItem('jsonData', jsonString);
 
-                // 将JSON转换为HTML并显示
+                // Convert JSON to HTML and display
                 jsonDisplay.innerHTML = createCollapsibleJson(jsonData);
 
-                // 添加折叠事件监听器
+                // Add collapse event listeners
                 addCollapseListeners();
             } catch (error) {
-                jsonDisplay.innerHTML = `<span class="error">JSON解析错误: ${error.message}</span>`;
+                jsonDisplay.innerHTML = `<span class="error">JSON parsing error: ${error.message}</span>`;
             }
         }
 
@@ -363,23 +362,23 @@
             try {
                 const jsonString = jsonInput.value.trim();
                 if (!jsonString) {
-                    jsonDisplay.innerHTML = '<span class="error">请输入JSON数据</span>';
+                    jsonDisplay.innerHTML = '<span class="error">Please enter JSON data</span>';
                     return;
                 }
 
-                // 解析JSON
+                // Parse JSON
                 const jsonData = JSON.parse(jsonString);
 
-                // 保存到localStorage
+                // Save to localStorage
                 localStorage.setItem('jsonData', jsonString);
 
-                // 将JSON转换为PHP代码并显示
+                // Convert JSON to PHP code and display
                 jsonDisplay.innerHTML = createCollapsiblePhp(jsonData);
 
-                // 添加折叠事件监听器
+                // Add collapse event listeners
                 addCollapseListeners();
             } catch (error) {
-                jsonDisplay.innerHTML = `<span class="error">JSON解析错误: ${error.message}</span>`;
+                jsonDisplay.innerHTML = `<span class="error">JSON parsing error: ${error.message}</span>`;
             }
         }
 
@@ -387,23 +386,23 @@
             try {
                 const jsonString = jsonInput.value.trim();
                 if (!jsonString) {
-                    jsonDisplay.innerHTML = '<span class="error">请输入JSON数据</span>';
+                    jsonDisplay.innerHTML = '<span class="error">Please enter JSON data</span>';
                     return;
                 }
 
-                // 解析JSON
+                // Parse JSON
                 const jsonData = JSON.parse(jsonString);
 
-                // 保存到localStorage
+                // Save to localStorage
                 localStorage.setItem('jsonData', jsonString);
 
-                // 将JSON转换为JavaScript代码并显示
+                // Convert JSON to JavaScript code and display
                 jsonDisplay.innerHTML = createCollapsibleJs(jsonData);
 
-                // 添加折叠事件监听器
+                // Add collapse event listeners
                 addCollapseListeners();
             } catch (error) {
-                jsonDisplay.innerHTML = `<span class="error">JSON解析错误: ${error.message}</span>`;
+                jsonDisplay.innerHTML = `<span class="error">JSON parsing error: ${error.message}</span>`;
             }
         }
 
@@ -411,23 +410,23 @@
             try {
                 const jsonString = jsonInput.value.trim();
                 if (!jsonString) {
-                    jsonDisplay.innerHTML = '<span class="error">请输入JSON数据</span>';
+                    jsonDisplay.innerHTML = '<span class="error">Please enter JSON data</span>';
                     return;
                 }
 
-                // 解析JSON
+                // Parse JSON
                 const jsonData = JSON.parse(jsonString);
 
-                // 保存到localStorage
+                // Save to localStorage
                 localStorage.setItem('jsonData', jsonString);
 
-                // 将JSON转换为XML代码并显示
+                // Convert JSON to XML code and display
                 jsonDisplay.innerHTML = createCollapsibleXml(jsonData);
 
-                // 添加折叠事件监听器
+                // Add collapse event listeners
                 addCollapseListeners();
             } catch (error) {
-                jsonDisplay.innerHTML = `<span class="error">JSON解析错误: ${error.message}</span>`;
+                jsonDisplay.innerHTML = `<span class="error">JSON parsing error: ${error.message}</span>`;
             }
         }
 
@@ -441,11 +440,11 @@
             map[currentFormat]()
         }
 
-        // 检查localStorage中是否有保存的数据
+        // Check if there is saved data in localStorage
         const savedJson = localStorage.getItem('jsonData');
         if (savedJson) {
             jsonInput.value = savedJson;
-            // 如果有保存的JSON，自动格式化
+            // If there is saved JSON, auto-format it
             formatButtons[currentFormat].classList.add('active');
             execFormat();
         }
@@ -468,7 +467,7 @@
                             return '[]';
                         }
 
-                        // 创建缩进空格
+                        // Create indentation spaces
                         const indentStr = ' '.repeat(indent);
                         const childIndentStr = ' '.repeat(indent + 4);
 
@@ -483,7 +482,7 @@
                             return '{}';
                         }
 
-                        // 创建缩进空格
+                        // Create indentation spaces
                         const indentStr = ' '.repeat(indent);
                         const childIndentStr = ' '.repeat(indent + 4);
 
@@ -518,11 +517,11 @@
                             return '[]';
                         }
 
-                        // 创建缩进空格
+                        // Create indentation spaces
                         const indentStr = ' '.repeat(indent);
                         const childIndentStr = ' '.repeat(indent + 4);
 
-                        // 添加注释显示元素数量
+                        // Add comment showing element count
                         const countComment = `<span class="php-comment"></span>`;
 
                         const arrayItems = data.map(item =>
@@ -538,11 +537,11 @@
                             return '[]';
                         }
 
-                        // 创建缩进空格
+                        // Create indentation spaces
                         const indentStr = ' '.repeat(indent);
                         const childIndentStr = ' '.repeat(indent + 4);
 
-                        // 添加注释显示属性数量
+                        // Add comment showing property count
                         const countComment = `<span class="php-comment"></span>`;
 
                         const objectItems = keys.map(key => {
@@ -578,11 +577,11 @@
                             return '[]';
                         }
 
-                        // 创建缩进空格
+                        // Create indentation spaces
                         const indentStr = ' '.repeat(indent);
                         const childIndentStr = ' '.repeat(indent + 4);
 
-                        // 添加注释显示元素数量
+                        // Add comment showing element count
                         const countComment = `<span class="js-comment"></span>`;
 
                         const arrayItems = data.map(item =>
@@ -598,15 +597,15 @@
                             return '{}';
                         }
 
-                        // 创建缩进空格
+                        // Create indentation spaces
                         const indentStr = ' '.repeat(indent);
                         const childIndentStr = ' '.repeat(indent + 4);
 
-                        // 添加注释显示属性数量
+                        // Add comment showing property count
                         const countComment = `<span class="js-comment"></span>`;
 
                         const objectItems = keys.map(key => {
-                            // 判断属性名是否需要引号（包含特殊字符或JavaScript保留字）
+                            // Determine if property name needs quotes (contains special characters or JavaScript reserved words)
                             const needQuotes = /[^a-zA-Z0-9_$]|^[0-9]/.test(key) ||
                                 /^(break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|function|if|import|in|instanceof|new|return|super|switch|this|throw|try|typeof|var|void|while|with|yield|enum|implements|interface|let|package|private|protected|public|static|await|abstract|boolean|byte|char|double|final|float|goto|int|long|native|short|synchronized|throws|transient|volatile)$/.test(key);
 
@@ -628,24 +627,24 @@
         }
 
         function createCollapsibleXml(data, indent = 0, nodeName = 'root', isRoot = true) {
-            // XML声明
+            // XML declaration
             let result = '';
             if (isRoot) {
                 result = '<span class="xml-declaration">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>\n';
             }
 
-            // 创建缩进空格
+            // Create indentation spaces
             const indentStr = ' '.repeat(indent);
             const childIndentStr = ' '.repeat(indent + 2);
 
-            // 处理简单类型
+            // Handle simple types
             if (data === null) {
                 return result + `${indentStr}<span class="xml-tag">&lt;${nodeName}</span> <span class="xml-attr">xsi:nil</span>="<span class="xml-attr">true</span>"<span class="xml-tag">/&gt;</span>`;
             }
 
             switch (typeof data) {
                 case 'string':
-                    // 检查是否包含XML特殊字符
+                    // Check if contains XML special characters
                     const needsCDATA = /[<>&]/.test(data);
                     if (needsCDATA) {
                         return result + `${indentStr}<span class="xml-tag">&lt;${nodeName}&gt;</span><span class="xml-cdata">&lt;![CDATA[${data}]]&gt;</span><span class="xml-tag">&lt;/${nodeName}&gt;</span>`;
@@ -657,42 +656,42 @@
                     return result + `${indentStr}<span class="xml-tag">&lt;${nodeName}&gt;</span><span class="xml-value">${data}</span><span class="xml-tag">&lt;/${nodeName}&gt;</span>`;
                 case 'object':
                     if (Array.isArray(data)) {
-                        // 处理数组
+                        // Handle array
                         if (data.length === 0) {
                             return result + `${indentStr}<span class="xml-tag">&lt;${nodeName}/&gt;</span>`;
                         }
 
-                        // 开始标签
+                        // Opening tag
                         result += `${indentStr}<span class="collapsible" data-len="${data.length}" data-type="xml-array"><span class="xml-tag">&lt;${nodeName}&gt;</span></span><span class="collapsible-content">\n`;
 
-                        // 数组子元素
+                        // Array child elements
                         for (let i = 0; i < data.length; i++) {
                             const itemName = 'item';
                             result += createCollapsibleXml(data[i], indent + 2, itemName, false) + '\n';
                         }
 
-                        // 结束标签
+                        // Closing tag
                         result += `${indentStr}<span class="xml-tag">&lt;/${nodeName}&gt;</span></span>`;
 
                         return result;
                     } else {
-                        // 处理对象
+                        // Handle object
                         const keys = Object.keys(data);
                         if (keys.length === 0) {
                             return result + `${indentStr}<span class="xml-tag">&lt;${nodeName}/&gt;</span>`;
                         }
 
-                        // 开始标签
+                        // Opening tag
                         result += `${indentStr}<span class="collapsible" data-len="${keys.length}" data-type="xml-object"><span class="xml-tag">&lt;${nodeName}&gt;</span></span><span class="collapsible-content">\n`;
 
-                        // 对象属性
+                        // Object properties
                         for (const key of keys) {
-                            // XML标签名不能以数字开头，包含特殊字符等，需要处理
+                            // XML tag names cannot start with numbers, contain special characters, etc., need processing
                             const validTagName = getValidXmlTagName(key);
                             result += createCollapsibleXml(data[key], indent + 2, validTagName, false) + '\n';
                         }
 
-                        // 结束标签
+                        // Closing tag
                         result += `${indentStr}<span class="xml-tag">&lt;/${nodeName}&gt;</span></span>`;
 
                         return result;
@@ -702,22 +701,22 @@
             }
         }
 
-        // 获取有效的XML标签名
+        // Get valid XML tag name
         function getValidXmlTagName(str) {
-            // XML标签名规则：只能以字母或下划线开头，只能包含字母、数字、下划线、连字符和点号
-            // 如果不符合规则，则添加前缀
+            // XML tag name rules: must start with a letter or underscore, can only contain letters, numbers, underscores, hyphens, and dots
+            // If it doesn't meet the rules, add a prefix
             if (/^[a-zA-Z_][\w.-]*$/.test(str)) {
                 return str;
             } else if (/^\d/.test(str)) {
-                // 以数字开头，添加前缀 'n'
+                // Starts with a number, add prefix 'n'
                 return 'n' + str;
             } else {
-                // 包含不允许的字符，使用替代名称
+                // Contains disallowed characters, use alternative name
                 return 'item_' + str.replace(/[^\w.-]/g, '_');
             }
         }
 
-        // 转义XML特殊字符
+        // Escape XML special characters
         function escapeXml(text) {
             return text
                 .replace(/&/g, '&amp;')
@@ -736,9 +735,9 @@
 
                     this.classList.toggle('collapsed');
 
-                    // 如果折叠了一个对象或数组，添加计数信息
+                    // If collapsing an object or array, add count information
                     if (this.classList.contains('collapsed')) {
-                        // 子元素数量
+                        // Child element count
                         const count = this.getAttribute('data-len');
                         const type = this.getAttribute('data-type');
 
@@ -753,11 +752,11 @@
                                 this.insertAdjacentHTML('beforeend', `${count}}`);
                             }
                         } else if (currentFormat === 'php') {
-                            // 对于PHP格式化，统一使用数组表示
+                            // For PHP formatting, uniformly use array representation
                             this.textContent = 'Array[';
                             this.insertAdjacentHTML('beforeend', `${count}]`);
                         } else if (currentFormat === 'js') {
-                            // 对于JavaScript格式，区分数组和对象
+                            // For JavaScript format, distinguish between arrays and objects
                             if (type === 'array' || this.textContent.trim() === '[') {
                                 this.textContent = 'Array[';
                                 this.insertAdjacentHTML('beforeend', `${count}]`);
@@ -766,26 +765,26 @@
                                 this.insertAdjacentHTML('beforeend', `${count}}`);
                             }
                         } else if (currentFormat === 'xml') {
-                            // 保存原始XML标签文本
+                            // Save original XML tag text
                             const originalText = this.textContent;
                             const tagMatch = originalText.match(/&lt;(\w+)&gt;/);
 
                             if (tagMatch && tagMatch[1]) {
                                 const tagName = tagMatch[1];
                                 if (type === 'xml-array') {
-                                    this.innerHTML = `<span class="xml-tag">&lt;${tagName}&gt;</span> <span class="xml-comment">&lt;!-- ${count} 个元素 --&gt;</span>`;
+                                    this.innerHTML = `<span class="xml-tag">&lt;${tagName}&gt;</span> <span class="xml-comment">&lt;!-- ${count} elements --&gt;</span>`;
                                 } else {
-                                    this.innerHTML = `<span class="xml-tag">&lt;${tagName}&gt;</span> <span class="xml-comment">&lt;!-- ${count} 个属性 --&gt;</span>`;
+                                    this.innerHTML = `<span class="xml-tag">&lt;${tagName}&gt;</span> <span class="xml-comment">&lt;!-- ${count} properties --&gt;</span>`;
                                 }
                             }
                         }
                     } else {
-                        // 展开时，恢复原始标记
+                        // When expanding, restore original markup
                         if (currentFormat === 'json') {
                             const isArray = this.textContent.includes('[');
                             this.textContent = isArray ? '[' : '{';
                         } else if (currentFormat === 'php') {
-                            this.textContent = '['; // PHP中都是数组表示法
+                            this.textContent = '['; // In PHP, always use array notation
                         } else if (currentFormat === 'js') {
                             const type = this.getAttribute('data-type');
                             if (type === 'array' || this.textContent.includes('Array')) {
@@ -794,7 +793,7 @@
                                 this.textContent = '{';
                             }
                         } else if (currentFormat === 'xml') {
-                            // 恢复原始XML标签
+                            // Restore original XML tag
                             const type = this.getAttribute('data-type');
                             const commentMatch = this.textContent.match(/&lt;(\w+)&gt;/);
 
