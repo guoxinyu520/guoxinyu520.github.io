@@ -1,0 +1,822 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JSON FORMMATTER</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f7f7f7;
+        }
+
+        .area {
+            width: 100%;
+            height: 90vh; /* Set height to 100% of viewport height */
+            max-height: 90vh; /* Ensure it doesn't exceed viewport height */
+            overflow: auto; /* Show scrollbar when content overflows */
+            border: 1px solid #ddd;
+            background-color: white;
+            font-family: monospace;
+            border-radius: 4px;
+            font-size: 14px;
+            padding: 10px;
+        }
+
+        #json-input {
+            white-space: pre;
+        }
+
+        #json-display {
+            white-space: pre;
+        }
+
+        .json-key {
+            color: #881391;
+        }
+
+        .json-string {
+            color: #1a1aa6;
+        }
+
+        .json-number {
+            color: #1c00cf;
+        }
+
+        .json-boolean {
+            color: #0d904f;
+        }
+
+        .json-null {
+            color: #a6a6a6;
+        }
+
+        /* PHP syntax highlighting */
+        .php-keyword {
+            color: #0000BB; /* PHP default keyword color */
+        }
+
+        .php-string {
+            color: #DD0000; /* PHP default string color */
+        }
+
+        .php-comment {
+            color: #008000; /* PHP default comment color */
+        }
+
+        /* JavaScript syntax highlighting */
+        .js-keyword {
+            color: #0000FF; /* JavaScript keyword color */
+        }
+
+        .js-string {
+            color: #009900; /* JavaScript string color */
+        }
+
+        .js-number {
+            color: #0000FF; /* JavaScript number color */
+        }
+
+        .js-boolean {
+            color: #0000FF; /* JavaScript boolean color */
+        }
+
+        .js-null {
+            color: #0000FF; /* JavaScript null color */
+        }
+
+        .js-comment {
+            color: #808080; /* JavaScript comment color */
+        }
+
+        .js-property {
+            color: #000000; /* JavaScript property name color */
+        }
+
+        /* XML syntax highlighting */
+        .xml-tag {
+            color: #0000FF; /* XML tag color */
+        }
+
+        .xml-attr {
+            color: #FF0000; /* XML attribute color */
+        }
+
+        .xml-value {
+            color: #000000; /* XML content color */
+        }
+
+        .xml-comment {
+            color: #008000; /* XML comment color */
+        }
+
+        .xml-cdata {
+            color: #808080; /* XML CDATA color */
+        }
+
+        .xml-declaration {
+            color: #0000FF; /* XML declaration color */
+        }
+
+        .collapsible {
+            cursor: pointer;
+            user-select: none;
+            position: relative;
+            display: inline-flex;
+            align-items: center; /* Vertically center content */
+        }
+
+        .collapsible::before {
+            content: '▼ ';
+            font-size: 10px;
+            color: #666;
+            display: inline-block;
+            vertical-align: middle; /* Vertically center */
+            line-height: 1;
+            margin-right: 2px;
+            position: relative;
+            top: 0; /* Fine-tune position */
+        }
+
+        .collapsed::before {
+            content: '▶ ';
+            vertical-align: middle; /* Vertically center */
+        }
+
+        .collapsed + .collapsible-content {
+            display: none;
+        }
+
+        .error {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+
+        .format-buttons {
+            width: 50%;
+            margin-bottom: 10px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .format-buttons button {
+            padding: 5px 10px;
+            cursor: pointer;
+            border: 1px solid #ddd;
+            background-color: #f5f5f5;
+            border-radius: 3px;
+        }
+
+        .format-buttons button.active {
+            background-color: #3498db;
+            color: white;
+            border-color: #2980b9;
+        }
+
+        .toast {
+            position: fixed;
+            left: 50%;
+            top: 5%;
+            transform: translate(-50%, -50%);
+            padding: 12px 24px;
+            background-color: #333;
+            color: white;
+            border-radius: 4px;
+            z-index: 1000;
+            opacity: 0;
+            transition: all 0.3s ease-in-out;
+            min-width: 200px;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+        }
+
+        .toast.show {
+            opacity: 1;
+        }
+
+        .toast.success {
+            background-color: #4CAF50;
+        }
+
+        .toast.error {
+            background-color: #f44336;
+        }
+    </style>
+</head>
+
+<body>
+<div style="display: flex;justify-content: center;">
+    <div class="format-buttons">
+        <button id="format-btn">Format JSON</button>
+        <button id="format-php-btn">Convert to PHP</button>
+        <button id="format-js-btn">Convert to JavaScript</button>
+        <button id="format-xml-btn">Convert to XML</button>
+        <button id="clear-btn">Clear</button>
+        <button id="cp-json-btn">Copy</button>
+    </div>
+</div>
+
+<div style="display: flex;justify-content: center;">
+    <div style="width: 40%;margin-right: 2rem;">
+        <textarea id="json-input" class="area" placeholder="Paste your JSON data here..."></textarea>
+    </div>
+    <div style="width: 40%;margin-left: 2rem;">
+        <div id="json-display" class="area"></div>
+    </div>
+</div>
+
+<div id="toast" class="toast"></div>
+
+<script>
+    // Copy success notification
+    function showCopySuccess(message, type = 'success') {
+        const toast = document.getElementById('toast');
+        toast.textContent = message;
+        toast.className = `toast ${type}`;
+
+        void toast.offsetWidth;
+
+        toast.classList.add('show');
+
+        setTimeout(() => {
+            toast.classList.remove('show');
+        }, 1000);
+    }
+
+    // Traditional copy method
+    function fallbackCopyText(text) {
+        const tempTextarea = document.createElement('textarea');
+        tempTextarea.value = text;
+        tempTextarea.style.position = 'absolute';
+        tempTextarea.style.left = '-9999px';
+        tempTextarea.style.top = '-9999px';
+        document.body.appendChild(tempTextarea);
+
+        try {
+            tempTextarea.select();
+            const successful = document.execCommand('copy');
+            if (successful) {
+                showCopySuccess('Copied successfully');
+            } else {
+                console.error('Copy command execution failed');
+            }
+        } catch (err) {
+            console.error('Error during copy:', err);
+        } finally {
+            document.body.removeChild(tempTextarea);
+        }
+    }
+
+    // Copy text
+    function copyText(text) {
+        // Use Clipboard API to copy content (if available)
+        if (navigator.clipboard && window.isSecureContext) {
+            navigator.clipboard.writeText(text)
+                .then(() => {
+                    showCopySuccess('Copied successfully');
+                })
+                .catch(err => {
+                    console.error('Copy failed:', err);
+                    fallbackCopyText(text);
+                });
+        } else {
+            fallbackCopyText(text);
+        }
+    }
+</script>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const jsonInput = document.getElementById('json-input');
+        const jsonDisplay = document.getElementById('json-display');
+        const clearBtn = document.getElementById('clear-btn');
+        const cpJsonBtn = document.getElementById('cp-json-btn');
+
+        jsonInput.addEventListener('input',function (){
+            execFormat()
+        })
+
+        clearBtn.addEventListener('click', function () {
+            jsonInput.value = '';
+            jsonDisplay.innerHTML = '';
+            localStorage.removeItem('jsonData');
+        });
+
+        cpJsonBtn.addEventListener('click', function () {
+            const displayContent = jsonDisplay.textContent || jsonDisplay.innerText;
+            if (!displayContent) return;
+            copyText(displayContent)
+        });
+
+        // Current format type (json, php, js, xml)
+        let currentFormat = localStorage.getItem('format_to') || 'json';
+
+        const formatButtons = {
+            'json': document.getElementById('format-btn'),
+            'php': document.getElementById('format-php-btn'),
+            'js': document.getElementById('format-js-btn'),
+            'xml': document.getElementById('format-xml-btn'),
+        };
+
+        Object.keys(formatButtons).map(format_to => {
+            const button = formatButtons[format_to];
+            button.addEventListener('click', function () {
+                currentFormat = format_to;
+                localStorage.setItem('format_to', format_to)
+                Object.values(formatButtons).map(b => b.classList.remove('active'));
+                button.classList.add('active');
+                execFormat();
+            });
+        })
+
+        function formatJson() {
+            try {
+                const jsonString = jsonInput.value.trim();
+                if (!jsonString) {
+                    jsonDisplay.innerHTML = '<span class="error">Please enter JSON data</span>';
+                    return;
+                }
+
+                // Parse JSON
+                const jsonData = JSON.parse(jsonString);
+
+                // Save to localStorage
+                localStorage.setItem('jsonData', jsonString);
+
+                // Convert JSON to HTML and display
+                jsonDisplay.innerHTML = createCollapsibleJson(jsonData);
+
+                // Add collapse event listeners
+                addCollapseListeners();
+            } catch (error) {
+                jsonDisplay.innerHTML = `<span class="error">JSON parsing error: ${error.message}</span>`;
+            }
+        }
+
+        function formatPhp() {
+            try {
+                const jsonString = jsonInput.value.trim();
+                if (!jsonString) {
+                    jsonDisplay.innerHTML = '<span class="error">Please enter JSON data</span>';
+                    return;
+                }
+
+                // Parse JSON
+                const jsonData = JSON.parse(jsonString);
+
+                // Save to localStorage
+                localStorage.setItem('jsonData', jsonString);
+
+                // Convert JSON to PHP code and display
+                jsonDisplay.innerHTML = createCollapsiblePhp(jsonData);
+
+                // Add collapse event listeners
+                addCollapseListeners();
+            } catch (error) {
+                jsonDisplay.innerHTML = `<span class="error">JSON parsing error: ${error.message}</span>`;
+            }
+        }
+
+        function formatJs() {
+            try {
+                const jsonString = jsonInput.value.trim();
+                if (!jsonString) {
+                    jsonDisplay.innerHTML = '<span class="error">Please enter JSON data</span>';
+                    return;
+                }
+
+                // Parse JSON
+                const jsonData = JSON.parse(jsonString);
+
+                // Save to localStorage
+                localStorage.setItem('jsonData', jsonString);
+
+                // Convert JSON to JavaScript code and display
+                jsonDisplay.innerHTML = createCollapsibleJs(jsonData);
+
+                // Add collapse event listeners
+                addCollapseListeners();
+            } catch (error) {
+                jsonDisplay.innerHTML = `<span class="error">JSON parsing error: ${error.message}</span>`;
+            }
+        }
+
+        function formatXml() {
+            try {
+                const jsonString = jsonInput.value.trim();
+                if (!jsonString) {
+                    jsonDisplay.innerHTML = '<span class="error">Please enter JSON data</span>';
+                    return;
+                }
+
+                // Parse JSON
+                const jsonData = JSON.parse(jsonString);
+
+                // Save to localStorage
+                localStorage.setItem('jsonData', jsonString);
+
+                // Convert JSON to XML code and display
+                jsonDisplay.innerHTML = createCollapsibleXml(jsonData);
+
+                // Add collapse event listeners
+                addCollapseListeners();
+            } catch (error) {
+                jsonDisplay.innerHTML = `<span class="error">JSON parsing error: ${error.message}</span>`;
+            }
+        }
+
+        function execFormat() {
+            const map = {
+                'json': formatJson,
+                'php': formatPhp,
+                'js': formatJs,
+                'xml': formatXml,
+            }
+            map[currentFormat]()
+        }
+
+        // Check if there is saved data in localStorage
+        const savedJson = localStorage.getItem('jsonData');
+        if (savedJson) {
+            jsonInput.value = savedJson;
+            // If there is saved JSON, auto-format it
+            formatButtons[currentFormat].classList.add('active');
+            execFormat();
+        }
+
+        function createCollapsibleJson(data, indent = 0) {
+            if (data === null) {
+                return '<span class="json-null">null</span>';
+            }
+
+            switch (typeof data) {
+                case 'number':
+                    return `<span class="json-number">${data}</span>`;
+                case 'boolean':
+                    return `<span class="json-boolean">${data}</span>`;
+                case 'string':
+                    return `<span class="json-string">"${escapeHtml(data)}"</span>`;
+                case 'object':
+                    if (Array.isArray(data)) {
+                        if (data.length === 0) {
+                            return '[]';
+                        }
+
+                        // Create indentation spaces
+                        const indentStr = ' '.repeat(indent);
+                        const childIndentStr = ' '.repeat(indent + 4);
+
+                        const arrayItems = data.map(item =>
+                            `${childIndentStr}${createCollapsibleJson(item, indent + 4)}`
+                        ).join(',\n');
+
+                        return `<span class="collapsible" data-len="${data.length}">[</span><span class="collapsible-content">\n${arrayItems}\n${indentStr}]</span>`;
+                    } else {
+                        const keys = Object.keys(data);
+                        if (keys.length === 0) {
+                            return '{}';
+                        }
+
+                        // Create indentation spaces
+                        const indentStr = ' '.repeat(indent);
+                        const childIndentStr = ' '.repeat(indent + 4);
+
+                        const objectItems = keys.map(key => {
+                            const keyHtml = `<span class="json-key">"${escapeHtml(key)}"</span>: `;
+                            const valueHtml = createCollapsibleJson(data[key], indent + 4);
+                            return `${childIndentStr}${keyHtml}${valueHtml}`;
+                        }).join(',\n');
+
+                        return `<span class="collapsible" data-len="${keys.length}">{</span><span class="collapsible-content">\n${objectItems}\n${indentStr}}</span>`;
+                    }
+                default:
+                    return String(data);
+            }
+        }
+
+        function createCollapsiblePhp(data, indent = 0, isRoot = true) {
+            if (data === null) {
+                return '<span class="php-keyword">null</span>';
+            }
+
+            switch (typeof data) {
+                case 'number':
+                    return `<span class="php-keyword">${data}</span>`;
+                case 'boolean':
+                    return `<span class="php-keyword">${data ? 'true' : 'false'}</span>`;
+                case 'string':
+                    return `<span class="php-string">'${escapeHtml(data)}'</span>`;
+                case 'object':
+                    if (Array.isArray(data)) {
+                        if (data.length === 0) {
+                            return '[]';
+                        }
+
+                        // Create indentation spaces
+                        const indentStr = ' '.repeat(indent);
+                        const childIndentStr = ' '.repeat(indent + 4);
+
+                        // Add comment showing element count
+                        const countComment = `<span class="php-comment"></span>`;
+
+                        const arrayItems = data.map(item =>
+                            `${childIndentStr}${createCollapsiblePhp(item, indent + 4, false)}`
+                        ).join(',\n');
+
+                        const prefix = isRoot ? '<span class="php-keyword">$array = </span>' : '';
+
+                        return `${prefix}<span class="collapsible" data-len="${data.length}" data-type="array">[</span><span class="collapsible-content"> ${countComment}\n${arrayItems}\n${indentStr}]</span>`;
+                    } else {
+                        const keys = Object.keys(data);
+                        if (keys.length === 0) {
+                            return '[]';
+                        }
+
+                        // Create indentation spaces
+                        const indentStr = ' '.repeat(indent);
+                        const childIndentStr = ' '.repeat(indent + 4);
+
+                        // Add comment showing property count
+                        const countComment = `<span class="php-comment"></span>`;
+
+                        const objectItems = keys.map(key => {
+                            const keyHtml = `'${escapeHtml(key)}'`;
+                            const valueHtml = createCollapsiblePhp(data[key], indent + 4, false);
+                            return `${childIndentStr}${keyHtml} => ${valueHtml}`;
+                        }).join(',\n');
+
+                        const prefix = isRoot ? '<span class="php-keyword">$array = </span>' : '';
+
+                        return `${prefix}<span class="collapsible" data-len="${keys.length}" data-type="array">[</span><span class="collapsible-content"> ${countComment}\n${objectItems}\n${indentStr}]</span>`;
+                    }
+                default:
+                    return String(data);
+            }
+        }
+
+        function createCollapsibleJs(data, indent = 0, isRoot = true, varName = 'data') {
+            if (data === null) {
+                return '<span class="js-null">null</span>';
+            }
+
+            switch (typeof data) {
+                case 'number':
+                    return `<span class="js-number">${data}</span>`;
+                case 'boolean':
+                    return `<span class="js-boolean">${data ? 'true' : 'false'}</span>`;
+                case 'string':
+                    return `<span class="js-string">"${escapeHtml(data)}"</span>`;
+                case 'object':
+                    if (Array.isArray(data)) {
+                        if (data.length === 0) {
+                            return '[]';
+                        }
+
+                        // Create indentation spaces
+                        const indentStr = ' '.repeat(indent);
+                        const childIndentStr = ' '.repeat(indent + 4);
+
+                        // Add comment showing element count
+                        const countComment = `<span class="js-comment"></span>`;
+
+                        const arrayItems = data.map(item =>
+                            `${childIndentStr}${createCollapsibleJs(item, indent + 4, false)}`
+                        ).join(',\n');
+
+                        const prefix = isRoot ? '<span class="js-keyword">const</span> ' + varName + ' = ' : '';
+
+                        return `${prefix}<span class="collapsible" data-len="${data.length}" data-type="array">[</span><span class="collapsible-content"> ${countComment}\n${arrayItems}\n${indentStr}]</span>`;
+                    } else {
+                        const keys = Object.keys(data);
+                        if (keys.length === 0) {
+                            return '{}';
+                        }
+
+                        // Create indentation spaces
+                        const indentStr = ' '.repeat(indent);
+                        const childIndentStr = ' '.repeat(indent + 4);
+
+                        // Add comment showing property count
+                        const countComment = `<span class="js-comment"></span>`;
+
+                        const objectItems = keys.map(key => {
+                            // Determine if property name needs quotes (contains special characters or JavaScript reserved words)
+                            const needQuotes = /[^a-zA-Z0-9_$]|^[0-9]/.test(key) ||
+                                /^(break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|function|if|import|in|instanceof|new|return|super|switch|this|throw|try|typeof|var|void|while|with|yield|enum|implements|interface|let|package|private|protected|public|static|await|abstract|boolean|byte|char|double|final|float|goto|int|long|native|short|synchronized|throws|transient|volatile)$/.test(key);
+
+                            const keyHtml = needQuotes ?
+                                `<span class="js-property">"${escapeHtml(key)}"</span>` :
+                                `<span class="js-property">${escapeHtml(key)}</span>`;
+
+                            const valueHtml = createCollapsibleJs(data[key], indent + 4, false);
+                            return `${childIndentStr}${keyHtml}: ${valueHtml}`;
+                        }).join(',\n');
+
+                        const prefix = isRoot ? '<span class="js-keyword">const</span> ' + varName + ' = ' : '';
+
+                        return `${prefix}<span class="collapsible" data-len="${keys.length}" data-type="object">{</span><span class="collapsible-content"> ${countComment}\n${objectItems}\n${indentStr}}</span>`;
+                    }
+                default:
+                    return String(data);
+            }
+        }
+
+        function createCollapsibleXml(data, indent = 0, nodeName = 'root', isRoot = true) {
+            // XML declaration
+            let result = '';
+            if (isRoot) {
+                result = '<span class="xml-declaration">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>\n';
+            }
+
+            // Create indentation spaces
+            const indentStr = ' '.repeat(indent);
+            const childIndentStr = ' '.repeat(indent + 2);
+
+            // Handle simple types
+            if (data === null) {
+                return result + `${indentStr}<span class="xml-tag">&lt;${nodeName}</span> <span class="xml-attr">xsi:nil</span>="<span class="xml-attr">true</span>"<span class="xml-tag">/&gt;</span>`;
+            }
+
+            switch (typeof data) {
+                case 'string':
+                    // Check if contains XML special characters
+                    const needsCDATA = /[<>&]/.test(data);
+                    if (needsCDATA) {
+                        return result + `${indentStr}<span class="xml-tag">&lt;${nodeName}&gt;</span><span class="xml-cdata">&lt;![CDATA[${data}]]&gt;</span><span class="xml-tag">&lt;/${nodeName}&gt;</span>`;
+                    } else {
+                        return result + `${indentStr}<span class="xml-tag">&lt;${nodeName}&gt;</span><span class="xml-value">${escapeXml(data)}</span><span class="xml-tag">&lt;/${nodeName}&gt;</span>`;
+                    }
+                case 'number':
+                case 'boolean':
+                    return result + `${indentStr}<span class="xml-tag">&lt;${nodeName}&gt;</span><span class="xml-value">${data}</span><span class="xml-tag">&lt;/${nodeName}&gt;</span>`;
+                case 'object':
+                    if (Array.isArray(data)) {
+                        // Handle array
+                        if (data.length === 0) {
+                            return result + `${indentStr}<span class="xml-tag">&lt;${nodeName}/&gt;</span>`;
+                        }
+
+                        // Opening tag
+                        result += `${indentStr}<span class="collapsible" data-len="${data.length}" data-type="xml-array"><span class="xml-tag">&lt;${nodeName}&gt;</span></span><span class="collapsible-content">\n`;
+
+                        // Array child elements
+                        for (let i = 0; i < data.length; i++) {
+                            const itemName = 'item';
+                            result += createCollapsibleXml(data[i], indent + 2, itemName, false) + '\n';
+                        }
+
+                        // Closing tag
+                        result += `${indentStr}<span class="xml-tag">&lt;/${nodeName}&gt;</span></span>`;
+
+                        return result;
+                    } else {
+                        // Handle object
+                        const keys = Object.keys(data);
+                        if (keys.length === 0) {
+                            return result + `${indentStr}<span class="xml-tag">&lt;${nodeName}/&gt;</span>`;
+                        }
+
+                        // Opening tag
+                        result += `${indentStr}<span class="collapsible" data-len="${keys.length}" data-type="xml-object"><span class="xml-tag">&lt;${nodeName}&gt;</span></span><span class="collapsible-content">\n`;
+
+                        // Object properties
+                        for (const key of keys) {
+                            // XML tag names cannot start with numbers, contain special characters, etc., need processing
+                            const validTagName = getValidXmlTagName(key);
+                            result += createCollapsibleXml(data[key], indent + 2, validTagName, false) + '\n';
+                        }
+
+                        // Closing tag
+                        result += `${indentStr}<span class="xml-tag">&lt;/${nodeName}&gt;</span></span>`;
+
+                        return result;
+                    }
+                default:
+                    return result + `${indentStr}<span class="xml-tag">&lt;${nodeName}&gt;</span><span class="xml-value">${data}</span><span class="xml-tag">&lt;/${nodeName}&gt;</span>`;
+            }
+        }
+
+        // Get valid XML tag name
+        function getValidXmlTagName(str) {
+            // XML tag name rules: must start with a letter or underscore, can only contain letters, numbers, underscores, hyphens, and dots
+            // If it doesn't meet the rules, add a prefix
+            if (/^[a-zA-Z_][\w.-]*$/.test(str)) {
+                return str;
+            } else if (/^\d/.test(str)) {
+                // Starts with a number, add prefix 'n'
+                return 'n' + str;
+            } else {
+                // Contains disallowed characters, use alternative name
+                return 'item_' + str.replace(/[^\w.-]/g, '_');
+            }
+        }
+
+        // Escape XML special characters
+        function escapeXml(text) {
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&apos;');
+        }
+
+        function addCollapseListeners() {
+            const collapsibles = document.querySelectorAll('.collapsible');
+
+            collapsibles.forEach(item => {
+                item.addEventListener('click', function (event) {
+                    event.stopPropagation();
+
+                    this.classList.toggle('collapsed');
+
+                    // If collapsing an object or array, add count information
+                    if (this.classList.contains('collapsed')) {
+                        // Child element count
+                        const count = this.getAttribute('data-len');
+                        const type = this.getAttribute('data-type');
+
+                        if (currentFormat === 'json') {
+                            const isArray = this.textContent.trim() === '[';
+
+                            if (isArray) {
+                                this.textContent = 'Array[';
+                                this.insertAdjacentHTML('beforeend', `${count}]`);
+                            } else {
+                                this.textContent = 'Object{';
+                                this.insertAdjacentHTML('beforeend', `${count}}`);
+                            }
+                        } else if (currentFormat === 'php') {
+                            // For PHP formatting, uniformly use array representation
+                            this.textContent = 'Array[';
+                            this.insertAdjacentHTML('beforeend', `${count}]`);
+                        } else if (currentFormat === 'js') {
+                            // For JavaScript format, distinguish between arrays and objects
+                            if (type === 'array' || this.textContent.trim() === '[') {
+                                this.textContent = 'Array[';
+                                this.insertAdjacentHTML('beforeend', `${count}]`);
+                            } else {
+                                this.textContent = 'Object{';
+                                this.insertAdjacentHTML('beforeend', `${count}}`);
+                            }
+                        } else if (currentFormat === 'xml') {
+                            // Save original XML tag text
+                            const originalText = this.textContent;
+                            const tagMatch = originalText.match(/&lt;(\w+)&gt;/);
+
+                            if (tagMatch && tagMatch[1]) {
+                                const tagName = tagMatch[1];
+                                if (type === 'xml-array') {
+                                    this.innerHTML = `<span class="xml-tag">&lt;${tagName}&gt;</span> <span class="xml-comment">&lt;!-- ${count} elements --&gt;</span>`;
+                                } else {
+                                    this.innerHTML = `<span class="xml-tag">&lt;${tagName}&gt;</span> <span class="xml-comment">&lt;!-- ${count} properties --&gt;</span>`;
+                                }
+                            }
+                        }
+                    } else {
+                        // When expanding, restore original markup
+                        if (currentFormat === 'json') {
+                            const isArray = this.textContent.includes('[');
+                            this.textContent = isArray ? '[' : '{';
+                        } else if (currentFormat === 'php') {
+                            this.textContent = '['; // In PHP, always use array notation
+                        } else if (currentFormat === 'js') {
+                            const type = this.getAttribute('data-type');
+                            if (type === 'array' || this.textContent.includes('Array')) {
+                                this.textContent = '[';
+                            } else {
+                                this.textContent = '{';
+                            }
+                        } else if (currentFormat === 'xml') {
+                            // Restore original XML tag
+                            const type = this.getAttribute('data-type');
+                            const commentMatch = this.textContent.match(/&lt;(\w+)&gt;/);
+
+                            if (commentMatch && commentMatch[1]) {
+                                const tagName = commentMatch[1];
+                                this.innerHTML = `<span class="xml-tag">&lt;${tagName}&gt;</span>`;
+                            }
+                        }
+                    }
+                });
+            });
+        }
+
+        function escapeHtml(text) {
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&#039;');
+        }
+    });
+</script>
+</body>
+
+</html>
