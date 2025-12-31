@@ -3,124 +3,332 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport"  content="width=device-width, initial-scale=1.0">
-    <title>JSON FORMMATTER </title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google-site-verification" content="j1U98lN3iPcSWCWEq5BVcwxyc5No9PIgbcWyLR74FD0" />
+    <title>JSON Formatter</title>
     <style>
+        :root {
+            --primary-color: #3b82f6;
+            --primary-hover: #2563eb;
+            --danger-color: #ef4444;
+            --danger-hover: #dc2626;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --info-color: #8b5cf6;
+            --bg-color: #f8fafc;
+            --card-bg: #ffffff;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: var(--font-family);
             line-height: 1.6;
-            color: #333;
-            margin: 0 auto;
+            color: var(--text-primary);
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
             padding: 20px;
-            background-color: #f7f7f7;
+        }
+
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+            color: white;
+        }
+
+        .header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.5px;
+        }
+
+        .header p {
+            font-size: 1.1rem;
+            opacity: 0.9;
+        }
+
+        .main-content {
+            background: var(--card-bg);
+            border-radius: 16px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            padding: 2rem;
+            backdrop-filter: blur(10px);
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-icon {
+            width: 18px;
+            height: 18px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            color: white;
+            box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(59, 130, 246, 0.4);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            color: var(--text-primary);
+            border: 1px solid var(--border-color);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, #e2e8f0, #cbd5e1);
+            transform: translateY(-1px);
+        }
+
+        .btn-danger {
+            background: linear-gradient(135deg, var(--danger-color), var(--danger-hover));
+            color: white;
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .btn-danger:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(239, 68, 68, 0.4);
+        }
+
+        .btn-success {
+            background: linear-gradient(135deg, var(--success-color), #0d9e6c);
+            color: white;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-success:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, var(--warning-color), #d97706);
+            color: white;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+        }
+
+        .btn-warning:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        .btn-info {
+            background: linear-gradient(135deg, var(--info-color), #7c3aed);
+            color: white;
+            box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+        }
+
+        .btn-info:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        .btn.active {
+            transform: translateY(-1px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.2) !important;
+        }
+
+        .editor-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            height: 70vh;
+        }
+
+        @media (max-width: 1024px) {
+            .editor-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        .editor-panel {
+            background: var(--bg-color);
+            border-radius: 12px;
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+        }
+
+        .panel-header {
+            background: var(--card-bg);
+            padding: 1rem;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .panel-title {
+            font-weight: 600;
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-icon {
+            width: 20px;
+            height: 20px;
+            color: var(--primary-color);
+        }
+
+        .textarea-container {
+            position: relative;
+            height: calc(100% - 60px);
         }
 
         .area {
             width: 100%;
-            height: 90vh; /* Set height to 100% of viewport height */
-            max-height: 90vh; /* Ensure it doesn't exceed viewport height */
-            overflow: auto; /* Show scrollbar when content overflows */
-            border: 1px solid #ddd;
-            background-color: white;
-            font-family: monospace;
-            border-radius: 4px;
+            height: 100%;
+            padding: 1rem;
+            border: none;
+            resize: none;
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
             font-size: 14px;
-            padding: 10px;
+            line-height: 1.5;
+            background: var(--card-bg);
+            color: var(--text-primary);
         }
 
-        #json-input {
-            white-space: pre;
+        .area:focus {
+            outline: none;
         }
 
         #json-display {
-            white-space: pre;
+            overflow: auto;
+            padding: 1rem;
+            white-space: pre; /* 关键：保留空白和换行 */
+            font-family: 'JetBrains Mono', 'Fira Code', monospace;
+            font-size: 14px;
+            line-height: 1.5;
         }
 
+        /* JSON Syntax Highlighting */
         .json-key {
-            color: #881391;
+            color: #7c3aed;
+            font-weight: 600;
         }
 
         .json-string {
-            color: #1a1aa6;
+            color: #059669;
         }
 
         .json-number {
-            color: #1c00cf;
+            color: #2563eb;
         }
 
         .json-boolean {
-            color: #0d904f;
+            color: #dc2626;
         }
 
         .json-null {
-            color: #a6a6a6;
+            color: #94a3b8;
         }
 
-        /* PHP syntax highlighting */
+        /* PHP Syntax Highlighting */
         .php-keyword {
-            color: #0000BB; /* PHP default keyword color */
+            color: #0000BB;
         }
 
         .php-string {
-            color: #DD0000; /* PHP default string color */
+            color: #DD0000;
         }
 
         .php-comment {
-            color: #008000; /* PHP default comment color */
+            color: #008000;
         }
 
-        /* JavaScript syntax highlighting */
+        /* JavaScript Syntax Highlighting */
         .js-keyword {
-            color: #0000FF; /* JavaScript keyword color */
+            color: #2563eb;
         }
 
         .js-string {
-            color: #009900; /* JavaScript string color */
+            color: #059669;
         }
 
         .js-number {
-            color: #0000FF; /* JavaScript number color */
+            color: #2563eb;
         }
 
         .js-boolean {
-            color: #0000FF; /* JavaScript boolean color */
+            color: #dc2626;
         }
 
         .js-null {
-            color: #0000FF; /* JavaScript null color */
+            color: #94a3b8;
         }
 
         .js-comment {
-            color: #808080; /* JavaScript comment color */
+            color: #64748b;
         }
 
         .js-property {
-            color: #000000; /* JavaScript property name color */
+            color: #7c3aed;
+            font-weight: 600;
         }
 
-        /* XML syntax highlighting */
+        /* XML Syntax Highlighting */
         .xml-tag {
-            color: #0000FF; /* XML tag color */
+            color: #2563eb;
         }
 
         .xml-attr {
-            color: #FF0000; /* XML attribute color */
+            color: #FF0000;
         }
 
         .xml-value {
-            color: #000000; /* XML content color */
+            color: #1e293b;
         }
 
         .xml-comment {
-            color: #008000; /* XML comment color */
+            color: #64748b;
         }
 
         .xml-cdata {
-            color: #808080; /* XML CDATA color */
+            color: #8b5cf6;
         }
 
         .xml-declaration {
-            color: #0000FF; /* XML declaration color */
+            color: #059669;
         }
 
         .collapsible {
@@ -128,205 +336,290 @@
             user-select: none;
             position: relative;
             display: inline-flex;
-            align-items: center; /* Vertically center content */
+            align-items: center;
         }
 
         .collapsible::before {
-            content: '▼ ';
+            content: '▼';
             font-size: 10px;
-            color: #666;
-            display: inline-block;
-            vertical-align: middle; /* Vertically center */
-            line-height: 1;
-            margin-right: 2px;
-            position: relative;
-            top: 0; /* Fine-tune position */
+            color: var(--text-secondary);
+            margin-right: 4px;
+            transition: transform 0.2s;
         }
 
         .collapsed::before {
-            content: '▶ ';
-            vertical-align: middle; /* Vertically center */
+            content: '▶';
         }
 
-        .collapsed + .collapsible-content {
+        .collapsed+.collapsible-content {
             display: none;
         }
 
         .error {
-            color: #e74c3c;
-            font-weight: bold;
+            color: var(--danger-color);
+            font-weight: 600;
+            padding: 1rem;
+            background: rgba(239, 68, 68, 0.1);
+            border-radius: 8px;
+            white-space: pre-wrap;
         }
 
-        .format-buttons {
-            width: 50%;
-            margin-bottom: 10px;
+        .status-bar {
             display: flex;
-            gap: 10px;
-            justify-content: center;
-        }
-
-        .format-buttons button {
-            padding: 5px 10px;
-            cursor: pointer;
-            border: 1px solid #ddd;
-            background-color: #f5f5f5;
-            border-radius: 3px;
-        }
-
-        .format-buttons button.active {
-            background-color: #3498db;
-            color: white;
-            border-color: #2980b9;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 0.875rem;
         }
 
         .toast {
             position: fixed;
-            left: 50%;
-            top: 5%;
-            transform: translate(-50%, -50%);
-            padding: 12px 24px;
-            background-color: #333;
-            color: white;
-            border-radius: 4px;
-            z-index: 1000;
+            bottom: 30px;
+            right: 30px;
+            padding: 1rem 1.5rem;
+            background: var(--card-bg);
+            color: var(--text-primary);
+            border-radius: 8px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            transform: translateY(100px);
             opacity: 0;
-            transition: all 0.3s ease-in-out;
-            min-width: 200px;
-            text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.2);
+            transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            z-index: 1000;
+            border: 1px solid var(--border-color);
         }
 
         .toast.show {
+            transform: translateY(0);
             opacity: 1;
         }
 
         .toast.success {
-            background-color: #4CAF50;
+            background: var(--success-color);
+            color: white;
         }
 
         .toast.error {
-            background-color: #f44336;
+            background: var(--danger-color);
+            color: white;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 12px;
+            background: var(--bg-color);
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .badge-icon {
+            width: 14px;
+            height: 14px;
+        }
+
+        .go-back-btn {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 100;
+        }
+
+        @media (max-width: 768px) {
+            .header h1 {
+                font-size: 1.8rem;
+            }
+
+            .btn {
+                padding: 10px 16px;
+                font-size: 13px;
+            }
+
+            .editor-container {
+                gap: 1rem;
+            }
+
+            .toolbar {
+                gap: 8px;
+            }
+
+            .go-back-btn {
+                position: static;
+                margin-bottom: 1rem;
+            }
+        }
+
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: var(--bg-color);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+
+        pre {
+            margin: 0;
+            white-space: pre-wrap;
+            word-break: break-word;
         }
     </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 
 <body>
-<div style="display: flex;justify-content: center;">
-    <div class="format-buttons">
-        <button id="format-btn">Format JSON</button>
-        <button id="format-php-btn">Convert to PHP</button>
-        <button id="format-js-btn">Convert to JavaScript</button>
-        <button id="format-xml-btn">Convert to XML</button>
-        <button id="clear-btn">Clear</button>
-        <button id="cp-json-btn">Copy</button>
+    <div class="container">
+        <!-- Go Back Button -->
+        <div class="go-back-btn">
+            <a href="../index.html" class="btn btn-secondary">
+                <svg class="btn-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to Home
+            </a>
+        </div>
+
+        <!-- Header -->
+        <div class="header">
+            <h1>JSON Formatter & Converter</h1>
+            <p>Format, validate, and convert JSON data to PHP, JavaScript, or XML</p>
+        </div>
+
+        <!-- Main Content -->
+        <div class="main-content">
+            <!-- Toolbar -->
+            <div class="toolbar">
+                <button id="format-btn" class="btn btn-primary">
+                    <i class="fas fa-code btn-icon"></i>
+                    Format JSON
+                </button>
+                <button id="format-php-btn" class="btn btn-secondary">
+                    <i class="fab fa-php btn-icon"></i>
+                    Convert to PHP
+                </button>
+                <button id="format-js-btn" class="btn btn-secondary">
+                    <i class="fab fa-js btn-icon"></i>
+                    Convert to JavaScript
+                </button>
+                <button id="format-xml-btn" class="btn btn-secondary">
+                    <i class="fas fa-file-code btn-icon"></i>
+                    Convert to XML
+                </button>
+                <button id="clear-btn" class="btn btn-danger">
+                    <i class="fas fa-trash btn-icon"></i>
+                    Clear
+                </button>
+                <button id="cp-json-btn" class="btn btn-success">
+                    <i class="fas fa-copy btn-icon"></i>
+                    Copy
+                </button>
+            </div>
+
+            <!-- Editor Panels -->
+            <div class="editor-container">
+                <!-- Input Panel -->
+                <div class="editor-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <i class="fas fa-pencil-alt panel-icon"></i>
+                            Input JSON
+                        </div>
+                        <div class="badge">
+                            <i class="fas fa-keyboard badge-icon"></i>
+                            Edit Here
+                        </div>
+                    </div>
+                    <div class="textarea-container">
+                        <textarea id="json-input" class="area" placeholder='Paste your JSON data here...
+Example:
+{
+  "name": "John Doe",
+  "age": 30,
+  "email": "john@example.com",
+  "skills": ["JavaScript", "Python", "Java"]
+}'></textarea>
+                    </div>
+                </div>
+
+                <!-- Output Panel -->
+                <div class="editor-panel">
+                    <div class="panel-header">
+                        <div class="panel-title">
+                            <i class="fas fa-eye panel-icon"></i>
+                            Formatted Output
+                        </div>
+                        <div id="output-info" class="badge">
+                            <i class="fas fa-code badge-icon"></i>
+                            Ready
+                        </div>
+                    </div>
+                    <div class="textarea-container">
+                        <div id="json-display" class="area">
+                            <div style="color: var(--text-secondary); text-align: center; margin-top: 2rem;">
+                                <i class="fas fa-arrow-left" style="font-size: 2rem; margin-bottom: 1rem;"></i>
+                                <p>Formatted output will appear here</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Status Bar -->
+            <div class="status-bar">
+                <div>
+                    <span id="char-count">0 characters</span>
+                </div>
+                <div>
+                    <span id="format-status">Ready</span>
+                </div>
+            </div>
+        </div>
     </div>
-</div>
 
-<div style="display: flex;justify-content: center;">
-    <div style="width: 40%;margin-right: 2rem;">
-        <textarea id="json-input" class="area" placeholder="Paste your JSON data here..."></textarea>
+    <!-- Toast Notification -->
+    <div id="toast" class="toast"></div>
+
+    <!-- Hidden Analytics -->
+    <div style="display:none;">
+        <!-- Google tag (gtag.js) -->
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-56E3VH6J0H"></script>
+        <script>
+            window.dataLayer = window.dataLayer || [];
+            function gtag() { dataLayer.push(arguments); }
+            gtag('js', new Date());
+            gtag('config', 'G-56E3VH6J0H');
+        </script>
     </div>
-    <div style="width: 40%;margin-left: 2rem;">
-        <div id="json-display" class="area"></div>
-    </div>
-</div>
 
-<div id="toast" class="toast"></div>
-<div style="display:none;">
-    <!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-56E3VH6J0H"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-
-  gtag('config', 'G-56E3VH6J0H');
-</script>
-</div>
-
-<script>
-    // Copy success notification
-    function showCopySuccess(message, type = 'success') {
-        const toast = document.getElementById('toast');
-        toast.textContent = message;
-        toast.className = `toast ${type}`;
-
-        void toast.offsetWidth;
-
-        toast.classList.add('show');
-
-        setTimeout(() => {
-            toast.classList.remove('show');
-        }, 1000);
-    }
-
-    // Traditional copy method
-    function fallbackCopyText(text) {
-        const tempTextarea = document.createElement('textarea');
-        tempTextarea.value = text;
-        tempTextarea.style.position = 'absolute';
-        tempTextarea.style.left = '-9999px';
-        tempTextarea.style.top = '-9999px';
-        document.body.appendChild(tempTextarea);
-
-        try {
-            tempTextarea.select();
-            const successful = document.execCommand('copy');
-            if (successful) {
-                showCopySuccess('Copied successfully');
-            } else {
-                console.error('Copy command execution failed');
-            }
-        } catch (err) {
-            console.error('Error during copy:', err);
-        } finally {
-            document.body.removeChild(tempTextarea);
-        }
-    }
-
-    // Copy text
-    function copyText(text) {
-        // Use Clipboard API to copy content (if available)
-        if (navigator.clipboard && window.isSecureContext) {
-            navigator.clipboard.writeText(text)
-                .then(() => {
-                    showCopySuccess('Copied successfully');
-                })
-                .catch(err => {
-                    console.error('Copy failed:', err);
-                    fallbackCopyText(text);
-                });
-        } else {
-            fallbackCopyText(text);
-        }
-    }
-</script>
-<script>
-    document.addEventListener('DOMContentLoaded', function () {
+    <script>
+        // DOM Elements
         const jsonInput = document.getElementById('json-input');
         const jsonDisplay = document.getElementById('json-display');
         const clearBtn = document.getElementById('clear-btn');
         const cpJsonBtn = document.getElementById('cp-json-btn');
+        const charCount = document.getElementById('char-count');
+        const formatStatus = document.getElementById('format-status');
+        const outputInfo = document.getElementById('output-info');
 
-        jsonInput.addEventListener('input',function (){
-            execFormat()
-        })
-
-        clearBtn.addEventListener('click', function () {
-            jsonInput.value = '';
-            jsonDisplay.innerHTML = '';
-            localStorage.removeItem('jsonData');
-        });
-
-        cpJsonBtn.addEventListener('click', function () {
-            const displayContent = jsonDisplay.textContent || jsonDisplay.innerText;
-            if (!displayContent) return;
-            copyText(displayContent)
-        });
-
-        // Current format type (json, php, js, xml)
+        // Current format type
         let currentFormat = localStorage.getItem('format_to') || 'json';
 
+        // Format buttons
         const formatButtons = {
             'json': document.getElementById('format-btn'),
             'php': document.getElementById('format-php-btn'),
@@ -334,38 +627,145 @@
             'xml': document.getElementById('format-xml-btn'),
         };
 
-        Object.keys(formatButtons).map(format_to => {
-            const button = formatButtons[format_to];
+        // Initialize active button
+        function initializeActiveButton() {
+            Object.values(formatButtons).forEach(btn => {
+                btn.classList.remove('active');
+                resetButtonStyle(btn);
+            });
+            
+            const activeButton = formatButtons[currentFormat];
+            if (activeButton) {
+                setActiveButtonStyle(activeButton, currentFormat);
+            } else {
+                currentFormat = 'json';
+                setActiveButtonStyle(formatButtons['json'], 'json');
+            }
+        }
+
+        // Set active button style
+        function setActiveButtonStyle(button, format) {
+            button.classList.add('active');
+            
+            switch(format) {
+                case 'json':
+                    button.className = 'btn btn-primary active';
+                    break;
+                case 'php':
+                    button.className = 'btn btn-warning active';
+                    break;
+                case 'js':
+                    button.className = 'btn btn-success active';
+                    break;
+                case 'xml':
+                    button.className = 'btn btn-info active';
+                    break;
+                default:
+                    button.className = 'btn btn-primary active';
+            }
+        }
+
+        // Reset button style
+        function resetButtonStyle(button) {
+            const id = button.id;
+            switch(id) {
+                case 'format-btn':
+                    button.className = 'btn btn-primary';
+                    break;
+                case 'format-php-btn':
+                    button.className = 'btn btn-secondary';
+                    break;
+                case 'format-js-btn':
+                    button.className = 'btn btn-secondary';
+                    break;
+                case 'format-xml-btn':
+                    button.className = 'btn btn-secondary';
+                    break;
+                case 'clear-btn':
+                    button.className = 'btn btn-danger';
+                    break;
+                case 'cp-json-btn':
+                    button.className = 'btn btn-success';
+                    break;
+            }
+        }
+
+        // Event Listeners
+        jsonInput.addEventListener('input', function () {
+            charCount.textContent = `${this.value.length} characters`;
+            execFormat();
+        });
+
+        clearBtn.addEventListener('click', function () {
+            jsonInput.value = '';
+            jsonDisplay.innerHTML = '<div style="color: var(--text-secondary); text-align: center; margin-top: 2rem;"><i class="fas fa-arrow-left" style="font-size: 2rem; margin-bottom: 1rem;"></i><p>Formatted output will appear here</p></div>';
+            localStorage.removeItem('jsonData');
+            charCount.textContent = '0 characters';
+            formatStatus.textContent = 'Cleared';
+            updateOutputInfo('Cleared', 'secondary');
+        });
+
+        cpJsonBtn.addEventListener('click', copyToClipboard);
+
+        // Add click events to format buttons
+        Object.keys(formatButtons).forEach(format => {
+            const button = formatButtons[format];
             button.addEventListener('click', function () {
-                currentFormat = format_to;
-                localStorage.setItem('format_to', format_to)
-                Object.values(formatButtons).map(b => b.classList.remove('active'));
-                button.classList.add('active');
+                currentFormat = format;
+                localStorage.setItem('format_to', format);
+                initializeActiveButton();
+                updateOutputInfo(format);
                 execFormat();
             });
-        })
+        });
+
+        // Load saved data and initialize
+        const savedJson = localStorage.getItem('jsonData');
+        if (savedJson) {
+            jsonInput.value = savedJson;
+            charCount.textContent = `${savedJson.length} characters`;
+        }
+        
+        initializeActiveButton();
+        updateOutputInfo(currentFormat);
+        
+        if (savedJson) {
+            execFormat();
+        }
+
+        // Functions
+        function execFormat() {
+            const formatMap = {
+                'json': formatJson,
+                'php': formatPhp,
+                'js': formatJs,
+                'xml': formatXml,
+            };
+            
+            if (formatMap[currentFormat]) {
+                formatMap[currentFormat]();
+            } else {
+                formatJson();
+            }
+        }
 
         function formatJson() {
             try {
                 const jsonString = jsonInput.value.trim();
                 if (!jsonString) {
-                    jsonDisplay.innerHTML = '<span class="error">Please enter JSON data</span>';
+                    showError('Please enter JSON data');
                     return;
                 }
 
-                // Parse JSON
                 const jsonData = JSON.parse(jsonString);
-
-                // Save to localStorage
                 localStorage.setItem('jsonData', jsonString);
-
-                // Convert JSON to HTML and display
-                jsonDisplay.innerHTML = createCollapsibleJson(jsonData);
-
-                // Add collapse event listeners
+                const formatted = createCollapsibleJson(jsonData);
+                jsonDisplay.innerHTML = formatted;
                 addCollapseListeners();
+                showSuccess('JSON formatted successfully');
+                updateOutputInfo('JSON', 'primary');
             } catch (error) {
-                jsonDisplay.innerHTML = `<span class="error">JSON parsing error: ${error.message}</span>`;
+                showError(`JSON parsing error: ${error.message}`);
             }
         }
 
@@ -373,23 +773,19 @@
             try {
                 const jsonString = jsonInput.value.trim();
                 if (!jsonString) {
-                    jsonDisplay.innerHTML = '<span class="error">Please enter JSON data</span>';
+                    showError('Please enter JSON data');
                     return;
                 }
 
-                // Parse JSON
                 const jsonData = JSON.parse(jsonString);
-
-                // Save to localStorage
                 localStorage.setItem('jsonData', jsonString);
-
-                // Convert JSON to PHP code and display
-                jsonDisplay.innerHTML = createCollapsiblePhp(jsonData);
-
-                // Add collapse event listeners
+                const formatted = createCollapsiblePhp(jsonData);
+                jsonDisplay.innerHTML = formatted;
                 addCollapseListeners();
+                showSuccess('Converted to PHP successfully');
+                updateOutputInfo('PHP', 'warning');
             } catch (error) {
-                jsonDisplay.innerHTML = `<span class="error">JSON parsing error: ${error.message}</span>`;
+                showError(`JSON parsing error: ${error.message}`);
             }
         }
 
@@ -397,23 +793,19 @@
             try {
                 const jsonString = jsonInput.value.trim();
                 if (!jsonString) {
-                    jsonDisplay.innerHTML = '<span class="error">Please enter JSON data</span>';
+                    showError('Please enter JSON data');
                     return;
                 }
 
-                // Parse JSON
                 const jsonData = JSON.parse(jsonString);
-
-                // Save to localStorage
                 localStorage.setItem('jsonData', jsonString);
-
-                // Convert JSON to JavaScript code and display
-                jsonDisplay.innerHTML = createCollapsibleJs(jsonData);
-
-                // Add collapse event listeners
+                const formatted = createCollapsibleJs(jsonData);
+                jsonDisplay.innerHTML = formatted;
                 addCollapseListeners();
+                showSuccess('Converted to JavaScript successfully');
+                updateOutputInfo('JavaScript', 'success');
             } catch (error) {
-                jsonDisplay.innerHTML = `<span class="error">JSON parsing error: ${error.message}</span>`;
+                showError(`JSON parsing error: ${error.message}`);
             }
         }
 
@@ -421,45 +813,23 @@
             try {
                 const jsonString = jsonInput.value.trim();
                 if (!jsonString) {
-                    jsonDisplay.innerHTML = '<span class="error">Please enter JSON data</span>';
+                    showError('Please enter JSON data');
                     return;
                 }
 
-                // Parse JSON
                 const jsonData = JSON.parse(jsonString);
-
-                // Save to localStorage
                 localStorage.setItem('jsonData', jsonString);
-
-                // Convert JSON to XML code and display
-                jsonDisplay.innerHTML = createCollapsibleXml(jsonData);
-
-                // Add collapse event listeners
+                const formatted = createCollapsibleXml(jsonData);
+                jsonDisplay.innerHTML = formatted;
                 addCollapseListeners();
+                showSuccess('Converted to XML successfully');
+                updateOutputInfo('XML', 'info');
             } catch (error) {
-                jsonDisplay.innerHTML = `<span class="error">JSON parsing error: ${error.message}</span>`;
+                showError(`JSON parsing error: ${error.message}`);
             }
         }
 
-        function execFormat() {
-            const map = {
-                'json': formatJson,
-                'php': formatPhp,
-                'js': formatJs,
-                'xml': formatXml,
-            }
-            map[currentFormat]()
-        }
-
-        // Check if there is saved data in localStorage
-        const savedJson = localStorage.getItem('jsonData');
-        if (savedJson) {
-            jsonInput.value = savedJson;
-            // If there is saved JSON, auto-format it
-            formatButtons[currentFormat].classList.add('active');
-            execFormat();
-        }
-
+        // JSON formatting function - FIXED
         function createCollapsibleJson(data, indent = 0) {
             if (data === null) {
                 return '<span class="json-null">null</span>';
@@ -478,38 +848,38 @@
                             return '[]';
                         }
 
-                        // Create indentation spaces
-                        const indentStr = ' '.repeat(indent);
-                        const childIndentStr = ' '.repeat(indent + 4);
+                        const indentStr = '&nbsp;'.repeat(indent);
+                        const childIndentStr = '&nbsp;'.repeat(indent + 2);
+                        
+                        const arrayItems = data.map(item => {
+                            const itemContent = createCollapsibleJson(item, indent + 2);
+                            return childIndentStr + itemContent;
+                        }).join(',<br>');
 
-                        const arrayItems = data.map(item =>
-                            `${childIndentStr}${createCollapsibleJson(item, indent + 4)}`
-                        ).join(',\n');
-
-                        return `<span class="collapsible" data-len="${data.length}">[</span><span class="collapsible-content">\n${arrayItems}\n${indentStr}]</span>`;
+                        return `<span class="collapsible" data-len="${data.length}" data-type="array">[</span><span class="collapsible-content"><br>${arrayItems}<br>${indentStr}]</span>`;
                     } else {
                         const keys = Object.keys(data);
                         if (keys.length === 0) {
                             return '{}';
                         }
 
-                        // Create indentation spaces
-                        const indentStr = ' '.repeat(indent);
-                        const childIndentStr = ' '.repeat(indent + 4);
+                        const indentStr = '&nbsp;'.repeat(indent);
+                        const childIndentStr = '&nbsp;'.repeat(indent + 2);
 
                         const objectItems = keys.map(key => {
                             const keyHtml = `<span class="json-key">"${escapeHtml(key)}"</span>: `;
-                            const valueHtml = createCollapsibleJson(data[key], indent + 4);
-                            return `${childIndentStr}${keyHtml}${valueHtml}`;
-                        }).join(',\n');
+                            const valueHtml = createCollapsibleJson(data[key], indent + 2);
+                            return childIndentStr + keyHtml + valueHtml;
+                        }).join(',<br>');
 
-                        return `<span class="collapsible" data-len="${keys.length}">{</span><span class="collapsible-content">\n${objectItems}\n${indentStr}}</span>`;
+                        return `<span class="collapsible" data-len="${keys.length}" data-type="object">{</span><span class="collapsible-content"><br>${objectItems}<br>${indentStr}}</span>`;
                     }
                 default:
                     return String(data);
             }
         }
 
+        // PHP formatting function - FIXED
         function createCollapsiblePhp(data, indent = 0, isRoot = true) {
             if (data === null) {
                 return '<span class="php-keyword">null</span>';
@@ -528,48 +898,41 @@
                             return '[]';
                         }
 
-                        // Create indentation spaces
-                        const indentStr = ' '.repeat(indent);
-                        const childIndentStr = ' '.repeat(indent + 4);
-
-                        // Add comment showing element count
-                        const countComment = `<span class="php-comment"></span>`;
+                        const indentStr = '&nbsp;'.repeat(indent);
+                        const childIndentStr = '&nbsp;'.repeat(indent + 2);
 
                         const arrayItems = data.map(item =>
-                            `${childIndentStr}${createCollapsiblePhp(item, indent + 4, false)}`
-                        ).join(',\n');
+                            childIndentStr + createCollapsiblePhp(item, indent + 2, false)
+                        ).join(',<br>');
 
                         const prefix = isRoot ? '<span class="php-keyword">$array = </span>' : '';
 
-                        return `${prefix}<span class="collapsible" data-len="${data.length}" data-type="array">[</span><span class="collapsible-content"> ${countComment}\n${arrayItems}\n${indentStr}]</span>`;
+                        return `${prefix}<span class="collapsible" data-len="${data.length}" data-type="array">[</span><span class="collapsible-content"><br>${arrayItems}<br>${indentStr}]</span>`;
                     } else {
                         const keys = Object.keys(data);
                         if (keys.length === 0) {
                             return '[]';
                         }
 
-                        // Create indentation spaces
-                        const indentStr = ' '.repeat(indent);
-                        const childIndentStr = ' '.repeat(indent + 4);
-
-                        // Add comment showing property count
-                        const countComment = `<span class="php-comment"></span>`;
+                        const indentStr = '&nbsp;'.repeat(indent);
+                        const childIndentStr = '&nbsp;'.repeat(indent + 2);
 
                         const objectItems = keys.map(key => {
                             const keyHtml = `'${escapeHtml(key)}'`;
-                            const valueHtml = createCollapsiblePhp(data[key], indent + 4, false);
-                            return `${childIndentStr}${keyHtml} => ${valueHtml}`;
-                        }).join(',\n');
+                            const valueHtml = createCollapsiblePhp(data[key], indent + 2, false);
+                            return childIndentStr + keyHtml + ' => ' + valueHtml;
+                        }).join(',<br>');
 
                         const prefix = isRoot ? '<span class="php-keyword">$array = </span>' : '';
 
-                        return `${prefix}<span class="collapsible" data-len="${keys.length}" data-type="array">[</span><span class="collapsible-content"> ${countComment}\n${objectItems}\n${indentStr}]</span>`;
+                        return `${prefix}<span class="collapsible" data-len="${keys.length}" data-type="array">[</span><span class="collapsible-content"><br>${objectItems}<br>${indentStr}]</span>`;
                     }
                 default:
                     return String(data);
             }
         }
 
+        // JavaScript formatting function - FIXED
         function createCollapsibleJs(data, indent = 0, isRoot = true, varName = 'data') {
             if (data === null) {
                 return '<span class="js-null">null</span>';
@@ -588,35 +951,26 @@
                             return '[]';
                         }
 
-                        // Create indentation spaces
-                        const indentStr = ' '.repeat(indent);
-                        const childIndentStr = ' '.repeat(indent + 4);
-
-                        // Add comment showing element count
-                        const countComment = `<span class="js-comment"></span>`;
+                        const indentStr = '&nbsp;'.repeat(indent);
+                        const childIndentStr = '&nbsp;'.repeat(indent + 2);
 
                         const arrayItems = data.map(item =>
-                            `${childIndentStr}${createCollapsibleJs(item, indent + 4, false)}`
-                        ).join(',\n');
+                            childIndentStr + createCollapsibleJs(item, indent + 2, false)
+                        ).join(',<br>');
 
                         const prefix = isRoot ? '<span class="js-keyword">const</span> ' + varName + ' = ' : '';
 
-                        return `${prefix}<span class="collapsible" data-len="${data.length}" data-type="array">[</span><span class="collapsible-content"> ${countComment}\n${arrayItems}\n${indentStr}]</span>`;
+                        return `${prefix}<span class="collapsible" data-len="${data.length}" data-type="array">[</span><span class="collapsible-content"><br>${arrayItems}<br>${indentStr}]</span>`;
                     } else {
                         const keys = Object.keys(data);
                         if (keys.length === 0) {
                             return '{}';
                         }
 
-                        // Create indentation spaces
-                        const indentStr = ' '.repeat(indent);
-                        const childIndentStr = ' '.repeat(indent + 4);
-
-                        // Add comment showing property count
-                        const countComment = `<span class="js-comment"></span>`;
+                        const indentStr = '&nbsp;'.repeat(indent);
+                        const childIndentStr = '&nbsp;'.repeat(indent + 2);
 
                         const objectItems = keys.map(key => {
-                            // Determine if property name needs quotes (contains special characters or JavaScript reserved words)
                             const needQuotes = /[^a-zA-Z0-9_$]|^[0-9]/.test(key) ||
                                 /^(break|case|catch|class|const|continue|debugger|default|delete|do|else|export|extends|finally|for|function|if|import|in|instanceof|new|return|super|switch|this|throw|try|typeof|var|void|while|with|yield|enum|implements|interface|let|package|private|protected|public|static|await|abstract|boolean|byte|char|double|final|float|goto|int|long|native|short|synchronized|throws|transient|volatile)$/.test(key);
 
@@ -624,38 +978,35 @@
                                 `<span class="js-property">"${escapeHtml(key)}"</span>` :
                                 `<span class="js-property">${escapeHtml(key)}</span>`;
 
-                            const valueHtml = createCollapsibleJs(data[key], indent + 4, false);
-                            return `${childIndentStr}${keyHtml}: ${valueHtml}`;
-                        }).join(',\n');
+                            const valueHtml = createCollapsibleJs(data[key], indent + 2, false);
+                            return childIndentStr + keyHtml + ': ' + valueHtml;
+                        }).join(',<br>');
 
                         const prefix = isRoot ? '<span class="js-keyword">const</span> ' + varName + ' = ' : '';
 
-                        return `${prefix}<span class="collapsible" data-len="${keys.length}" data-type="object">{</span><span class="collapsible-content"> ${countComment}\n${objectItems}\n${indentStr}}</span>`;
+                        return `${prefix}<span class="collapsible" data-len="${keys.length}" data-type="object">{</span><span class="collapsible-content"><br>${objectItems}<br>${indentStr}}</span>`;
                     }
                 default:
                     return String(data);
             }
         }
 
+        // XML formatting function - FIXED
         function createCollapsibleXml(data, indent = 0, nodeName = 'root', isRoot = true) {
-            // XML declaration
             let result = '';
             if (isRoot) {
-                result = '<span class="xml-declaration">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span>\n';
+                result = '<span class="xml-declaration">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span><br>';
             }
 
-            // Create indentation spaces
-            const indentStr = ' '.repeat(indent);
-            const childIndentStr = ' '.repeat(indent + 2);
+            const indentStr = '&nbsp;'.repeat(indent);
+            const childIndentStr = '&nbsp;'.repeat(indent + 2);
 
-            // Handle simple types
             if (data === null) {
                 return result + `${indentStr}<span class="xml-tag">&lt;${nodeName}</span> <span class="xml-attr">xsi:nil</span>="<span class="xml-attr">true</span>"<span class="xml-tag">/&gt;</span>`;
             }
 
             switch (typeof data) {
                 case 'string':
-                    // Check if contains XML special characters
                     const needsCDATA = /[<>&]/.test(data);
                     if (needsCDATA) {
                         return result + `${indentStr}<span class="xml-tag">&lt;${nodeName}&gt;</span><span class="xml-cdata">&lt;![CDATA[${data}]]&gt;</span><span class="xml-tag">&lt;/${nodeName}&gt;</span>`;
@@ -667,42 +1018,33 @@
                     return result + `${indentStr}<span class="xml-tag">&lt;${nodeName}&gt;</span><span class="xml-value">${data}</span><span class="xml-tag">&lt;/${nodeName}&gt;</span>`;
                 case 'object':
                     if (Array.isArray(data)) {
-                        // Handle array
                         if (data.length === 0) {
                             return result + `${indentStr}<span class="xml-tag">&lt;${nodeName}/&gt;</span>`;
                         }
 
-                        // Opening tag
-                        result += `${indentStr}<span class="collapsible" data-len="${data.length}" data-type="xml-array"><span class="xml-tag">&lt;${nodeName}&gt;</span></span><span class="collapsible-content">\n`;
+                        result += `${indentStr}<span class="collapsible" data-len="${data.length}" data-type="xml-array"><span class="xml-tag">&lt;${nodeName}&gt;</span></span><span class="collapsible-content"><br>`;
 
-                        // Array child elements
                         for (let i = 0; i < data.length; i++) {
                             const itemName = 'item';
-                            result += createCollapsibleXml(data[i], indent + 2, itemName, false) + '\n';
+                            result += createCollapsibleXml(data[i], indent + 2, itemName, false) + '<br>';
                         }
 
-                        // Closing tag
                         result += `${indentStr}<span class="xml-tag">&lt;/${nodeName}&gt;</span></span>`;
 
                         return result;
                     } else {
-                        // Handle object
                         const keys = Object.keys(data);
                         if (keys.length === 0) {
                             return result + `${indentStr}<span class="xml-tag">&lt;${nodeName}/&gt;</span>`;
                         }
 
-                        // Opening tag
-                        result += `${indentStr}<span class="collapsible" data-len="${keys.length}" data-type="xml-object"><span class="xml-tag">&lt;${nodeName}&gt;</span></span><span class="collapsible-content">\n`;
+                        result += `${indentStr}<span class="collapsible" data-len="${keys.length}" data-type="xml-object"><span class="xml-tag">&lt;${nodeName}&gt;</span></span><span class="collapsible-content"><br>`;
 
-                        // Object properties
                         for (const key of keys) {
-                            // XML tag names cannot start with numbers, contain special characters, etc., need processing
                             const validTagName = getValidXmlTagName(key);
-                            result += createCollapsibleXml(data[key], indent + 2, validTagName, false) + '\n';
+                            result += createCollapsibleXml(data[key], indent + 2, validTagName, false) + '<br>';
                         }
 
-                        // Closing tag
                         result += `${indentStr}<span class="xml-tag">&lt;/${nodeName}&gt;</span></span>`;
 
                         return result;
@@ -712,102 +1054,39 @@
             }
         }
 
-        // Get valid XML tag name
-        function getValidXmlTagName(str) {
-            // XML tag name rules: must start with a letter or underscore, can only contain letters, numbers, underscores, hyphens, and dots
-            // If it doesn't meet the rules, add a prefix
-            if (/^[a-zA-Z_][\w.-]*$/.test(str)) {
-                return str;
-            } else if (/^\d/.test(str)) {
-                // Starts with a number, add prefix 'n'
-                return 'n' + str;
-            } else {
-                // Contains disallowed characters, use alternative name
-                return 'item_' + str.replace(/[^\w.-]/g, '_');
-            }
-        }
-
-        // Escape XML special characters
-        function escapeXml(text) {
-            return text
-                .replace(/&/g, '&amp;')
-                .replace(/</g, '&lt;')
-                .replace(/>/g, '&gt;')
-                .replace(/"/g, '&quot;')
-                .replace(/'/g, '&apos;');
-        }
-
+        // Helper functions
         function addCollapseListeners() {
             const collapsibles = document.querySelectorAll('.collapsible');
 
             collapsibles.forEach(item => {
                 item.addEventListener('click', function (event) {
                     event.stopPropagation();
-
+                    
                     this.classList.toggle('collapsed');
-
-                    // If collapsing an object or array, add count information
-                    if (this.classList.contains('collapsed')) {
-                        // Child element count
-                        const count = this.getAttribute('data-len');
-                        const type = this.getAttribute('data-type');
-
-                        if (currentFormat === 'json') {
-                            const isArray = this.textContent.trim() === '[';
-
-                            if (isArray) {
-                                this.textContent = 'Array[';
-                                this.insertAdjacentHTML('beforeend', `${count}]`);
-                            } else {
-                                this.textContent = 'Object{';
-                                this.insertAdjacentHTML('beforeend', `${count}}`);
-                            }
-                        } else if (currentFormat === 'php') {
-                            // For PHP formatting, uniformly use array representation
-                            this.textContent = 'Array[';
-                            this.insertAdjacentHTML('beforeend', `${count}]`);
-                        } else if (currentFormat === 'js') {
-                            // For JavaScript format, distinguish between arrays and objects
-                            if (type === 'array' || this.textContent.trim() === '[') {
-                                this.textContent = 'Array[';
-                                this.insertAdjacentHTML('beforeend', `${count}]`);
-                            } else {
-                                this.textContent = 'Object{';
-                                this.insertAdjacentHTML('beforeend', `${count}}`);
-                            }
-                        } else if (currentFormat === 'xml') {
-                            // Save original XML tag text
-                            const originalText = this.textContent;
-                            const tagMatch = originalText.match(/&lt;(\w+)&gt;/);
-
+                    
+                    const count = this.getAttribute('data-len');
+                    const type = this.getAttribute('data-type');
+                    const isCollapsed = this.classList.contains('collapsed');
+                    
+                    if (isCollapsed) {
+                        if (type === 'array') {
+                            this.innerHTML = `Array[${count}]`;
+                        } else if (type === 'object') {
+                            this.innerHTML = `Object{${count}}`;
+                        } else if (type === 'xml-array' || type === 'xml-object') {
+                            const tagMatch = this.innerHTML.match(/&lt;(\w+)&gt;/);
                             if (tagMatch && tagMatch[1]) {
                                 const tagName = tagMatch[1];
-                                if (type === 'xml-array') {
-                                    this.innerHTML = `<span class="xml-tag">&lt;${tagName}&gt;</span> <span class="xml-comment">&lt;!-- ${count} elements --&gt;</span>`;
-                                } else {
-                                    this.innerHTML = `<span class="xml-tag">&lt;${tagName}&gt;</span> <span class="xml-comment">&lt;!-- ${count} properties --&gt;</span>`;
-                                }
+                                this.innerHTML = `<span class="xml-tag">&lt;${tagName}&gt;</span> <span class="xml-comment">&lt;!-- ${count} items --&gt;</span>`;
                             }
                         }
                     } else {
-                        // When expanding, restore original markup
-                        if (currentFormat === 'json') {
-                            const isArray = this.textContent.includes('[');
-                            this.textContent = isArray ? '[' : '{';
-                        } else if (currentFormat === 'php') {
-                            this.textContent = '['; // In PHP, always use array notation
-                        } else if (currentFormat === 'js') {
-                            const type = this.getAttribute('data-type');
-                            if (type === 'array' || this.textContent.includes('Array')) {
-                                this.textContent = '[';
-                            } else {
-                                this.textContent = '{';
-                            }
-                        } else if (currentFormat === 'xml') {
-                            // Restore original XML tag
-                            const type = this.getAttribute('data-type');
-                            const commentMatch = this.textContent.match(/&lt;(\w+)&gt;/);
-
+                        if (type === 'array') {
+                            this.innerHTML = '[';
+                        } else if (type === 'object') {
+                            this.innerHTML = '{';
+                        } else if (type === 'xml-array' || type === 'xml-object') {
+                            const commentMatch = this.innerHTML.match(/&lt;(\w+)&gt;/);
                             if (commentMatch && commentMatch[1]) {
                                 const tagName = commentMatch[1];
                                 this.innerHTML = `<span class="xml-tag">&lt;${tagName}&gt;</span>`;
@@ -819,15 +1098,159 @@
         }
 
         function escapeHtml(text) {
-            return text
+            if (text === null || text === undefined) return '';
+            return text.toString()
                 .replace(/&/g, '&amp;')
                 .replace(/</g, '&lt;')
                 .replace(/>/g, '&gt;')
                 .replace(/"/g, '&quot;')
                 .replace(/'/g, '&#039;');
         }
-    });
-</script>
-</body>
 
+        function escapeXml(text) {
+            return text
+                .replace(/&/g, '&amp;')
+                .replace(/</g, '&lt;')
+                .replace(/>/g, '&gt;')
+                .replace(/"/g, '&quot;')
+                .replace(/'/g, '&apos;');
+        }
+
+        function getValidXmlTagName(str) {
+            if (/^[a-zA-Z_][\w.-]*$/.test(str)) {
+                return str;
+            } else if (/^\d/.test(str)) {
+                return 'n' + str;
+            } else {
+                return 'item_' + str.replace(/[^\w.-]/g, '_');
+            }
+        }
+
+        // Copy to clipboard
+        function copyToClipboard() {
+            const displayContent = jsonDisplay.textContent || jsonDisplay.innerText;
+            if (!displayContent || displayContent.includes('Formatted output will appear here')) {
+                showError('No content to copy');
+                return;
+            }
+
+            if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(displayContent)
+                    .then(() => showToast('Copied to clipboard!', 'success'))
+                    .catch(() => fallbackCopy(displayContent));
+            } else {
+                fallbackCopy(displayContent);
+            }
+        }
+
+        function fallbackCopy(text) {
+            const textArea = document.createElement('textarea');
+            textArea.value = text;
+            textArea.style.position = 'fixed';
+            textArea.style.left = '-999999px';
+            textArea.style.top = '-999999px';
+            document.body.appendChild(textArea);
+            textArea.focus();
+            textArea.select();
+            try {
+                document.execCommand('copy');
+                showToast('Copied to clipboard!', 'success');
+            } catch (err) {
+                showError('Failed to copy');
+            }
+            document.body.removeChild(textArea);
+        }
+
+        // Toast notification
+        function showToast(message, type = 'success') {
+            const toast = document.getElementById('toast');
+            toast.textContent = message;
+            toast.className = `toast ${type}`;
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+            }, 3000);
+        }
+
+        function showSuccess(message) {
+            formatStatus.textContent = message;
+            formatStatus.style.color = 'var(--success-color)';
+            setTimeout(() => {
+                formatStatus.textContent = 'Ready';
+                formatStatus.style.color = '';
+            }, 2000);
+        }
+
+        function showError(message) {
+            const errorHtml = `<span class="error">${message}</span>`;
+            jsonDisplay.innerHTML = errorHtml;
+            formatStatus.textContent = message;
+            formatStatus.style.color = 'var(--danger-color)';
+            setTimeout(() => {
+                formatStatus.textContent = 'Ready';
+                formatStatus.style.color = '';
+            }, 3000);
+        }
+
+        function updateOutputInfo(format, type = 'primary') {
+            const icons = {
+                'json': 'fas fa-code',
+                'php': 'fab fa-php',
+                'js': 'fab fa-js',
+                'xml': 'fas fa-file-code',
+                'Cleared': 'fas fa-times-circle',
+                'secondary': 'fas fa-info-circle'
+            };
+            
+            const colors = {
+                'primary': '#3b82f6',
+                'success': '#10b981',
+                'warning': '#f59e0b',
+                'danger': '#ef4444',
+                'info': '#8b5cf6',
+                'secondary': '#64748b'
+            };
+            
+            let actualType = type;
+            if (format === 'php') actualType = 'warning';
+            else if (format === 'js') actualType = 'success';
+            else if (format === 'xml') actualType = 'info';
+            else if (format === 'json') actualType = 'primary';
+            
+            outputInfo.innerHTML = `
+                <i class="${icons[format] || icons['secondary']}" style="color: ${colors[actualType] || colors['secondary']}"></i>
+                ${format.toUpperCase()}
+            `;
+        }
+
+        // Test function
+        function testFormatting() {
+            const testJson = `{
+  "name": "John Doe",
+  "age": 30,
+  "isStudent": false,
+  "address": {
+    "street": "123 Main St",
+    "city": "New York",
+    "zipcode": 10001
+  },
+  "hobbies": ["reading", "gaming", "coding"],
+  "projects": [
+    {
+      "name": "Website",
+      "completed": true
+    },
+    {
+      "name": "Mobile App",
+      "completed": false
+    }
+  ]
+}`;
+            jsonInput.value = testJson;
+            execFormat();
+            console.log('Test formatting completed');
+        }
+    </script>
+</body>
 </html>
