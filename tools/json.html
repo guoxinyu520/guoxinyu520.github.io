@@ -602,6 +602,16 @@ Example:
      data-ad-format="auto"
      data-full-width-responsive="true"></ins>
 <script>
+    // 放在所有脚本之前
+window.addEventListener('unhandledrejection', event => {
+    if (event.reason && event.reason.message && 
+        event.reason.message.includes('asynchronous response')) {
+        event.preventDefault();
+        console.log('Suppressed extension communication error');
+        return false;
+    }
+});
+
      (adsbygoogle = window.adsbygoogle || []).push({});
 </script>
     <!-- Toast Notification -->
