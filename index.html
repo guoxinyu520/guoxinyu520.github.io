@@ -137,18 +137,84 @@
                 </div>
             </div>
         </div>
-<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3809007645747315"
-     crossorigin="anonymous"></script>
-<!-- 广告1 -->
-<ins class="adsbygoogle"
-     style="display:block"
-     data-ad-client="ca-pub-3809007645747315"
-     data-ad-slot="7647765501"
-     data-ad-format="auto"
-     data-full-width-responsive="true"></ins>
-<script>
-     (adsbygoogle = window.adsbygoogle || []).push({});
-</script>
+<div class="mt-8 text-center">
+        <ins class="adsbygoogle"
+             style="display:block; min-height: 90px;"
+             data-ad-client="ca-pub-3809007645747315"
+             data-ad-slot="7647765501"
+             data-ad-format="auto"
+             data-full-width-responsive="true"></ins>
+    </div>
+
+    <!-- 修复后的脚本 -->
+    <script>
+        // 防止异步消息错误
+        if (typeof chrome !== 'undefined' && chrome.runtime && chrome.runtime.onMessage) {
+            const originalAddListener = chrome.runtime.onMessage.addListener;
+            chrome.runtime.onMessage.addListener = function(listener) {
+                return originalAddListener.call(this, function() {
+                    try {
+                        return listener.apply(this, arguments);
+                    } catch (e) {
+                        console.warn('Extension message listener error:', e);
+                        return false;
+                    }
+                });
+            };
+        }
+
+        // 安全加载广告
+        function loadAdsSafely() {
+            // 检查是否已经加载
+            if (window.adsLoaded) return;
+            window.adsLoaded = true;
+            
+            return new Promise((resolve) => {
+                const script = document.createElement('script');
+                script.src = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3809007645747315';
+                script.async = true;
+                script.crossOrigin = 'anonymous';
+                
+                script.onload = function() {
+                    setTimeout(() => {
+                        try {
+                            // 确保adsbygoogle对象存在
+                            window.adsbygoogle = window.adsbygoogle || [];
+                            window.adsbygoogle.push({
+                                google_ad_client: 'ca-pub-3809007645747315',
+                                enable_page_level_ads: false
+                            });
+                            
+                            // 单独处理每个广告单元
+                            const ads = document.querySelectorAll('.adsbygoogle');
+                            ads.forEach(ad => {
+                                try {
+                                    (window.adsbygoogle = window.adsbygoogle || []).push({});
+                                } catch (e) {
+                                    console.warn('Failed to push ad for:', ad);
+                                }
+                            });
+                            resolve();
+                        } catch (e) {
+                            console.warn('Ad initialization failed:', e);
+                            resolve();
+                        }
+                    }, 500);
+                };
+                
+                script.onerror = resolve;
+                document.head.appendChild(script);
+            });
+        }
+
+        // 在页面加载完成后安全加载广告
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', loadAdsSafely);
+        } else {
+            loadAdsSafely();
+        }
+    </script>
+
 <div style="display:none;">
     <!-- Google tag (gtag.js) -->
 <script async src="https://www.googletagmanager.com/gtag/js?id=G-56E3VH6J0H"></script>
